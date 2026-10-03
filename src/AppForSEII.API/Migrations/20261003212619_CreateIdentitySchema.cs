@@ -32,6 +32,8 @@ namespace AppForSEII.API.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Surname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
+                    DireccionFacturacion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -50,6 +52,71 @@ namespace AppForSEII.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompraModelos3D",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FechaCompra = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NombreCliente = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ApellidoCliente = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CorreoElectronico = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DireccionFacturacion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PrecioTotal = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    MetodoPago = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompraModelos3D", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LicenciasModelo3D",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FechaExpiracion = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LicenciasModelo3D", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LineaCompraModelo3D",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CantidadLicencias = table.Column<int>(type: "int", nullable: false),
+                    PrecioUnidad = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    Subtotal = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LineaCompraModelo3D", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Modelos3D",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", maxLength: 50, nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Categoria = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Formato = table.Column<int>(type: "int", nullable: false),
+                    Precio = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Modelos3D", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,6 +282,18 @@ namespace AppForSEII.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CompraModelos3D");
+
+            migrationBuilder.DropTable(
+                name: "LicenciasModelo3D");
+
+            migrationBuilder.DropTable(
+                name: "LineaCompraModelo3D");
+
+            migrationBuilder.DropTable(
+                name: "Modelos3D");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

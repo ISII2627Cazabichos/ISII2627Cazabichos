@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppForSEII.API.Models;
 
@@ -26,6 +27,7 @@ public class ReservaImpresora
     public decimal PrecioTotal { get; set; }
 
     [Required]
-    public MetodoPago MetodoPago { get; set; }
+    [StringLength(50)]
+    public string MetodoPago { get; set; } = string.Empty;
 
 }

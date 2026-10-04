@@ -17,7 +17,8 @@ public class Impresora3D
     public string Modelo { get; set; } = string.Empty;
 
     [Required]
-    public TipoImpresora Tipo { get; set; }
+    [StringLength(50)]
+    public string Tipo { get; set; } = string.Empty;
 
     [Required]
     [StringLength(1000)]
@@ -29,5 +30,4 @@ public class Impresora3D
     [Column(TypeName = "decimal(18,2)")]
     public decimal PrecioReserva { get; set; }
 
-    public ICollection<LineaReserva> LineasReserva { get; set; } = new List<LineaReserva>();
 }

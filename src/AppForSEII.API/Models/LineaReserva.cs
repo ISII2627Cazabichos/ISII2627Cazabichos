@@ -9,20 +9,9 @@ public class LineaReserva
     public int Id { get; set; }
 
     [Required]
-    public TiempoReserva TiempoReserva { get; set; }
+    [StringLength(50)]
+    public string TiempoReserva { get; set; } = string.Empty;
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal PrecioSubtotal { get; set; }
-
-    [Required]
-    public int ReservaImpresoraId { get; set; }
-
-    [ForeignKey(nameof(ReservaImpresoraId))]
-    public ReservaImpresora ReservaImpresora { get; set; } = null!;
-
-    [Required]
-    public int Impresora3DId { get; set; }
-
-    [ForeignKey(nameof(Impresora3DId))]
-    public Impresora3D Impresora3D { get; set; } = null!;
 }

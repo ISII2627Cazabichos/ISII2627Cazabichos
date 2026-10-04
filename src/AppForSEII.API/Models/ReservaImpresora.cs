@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppForSEII.API.Models;
 
@@ -29,11 +28,4 @@ public class ReservaImpresora
     [Required]
     public MetodoPago MetodoPago { get; set; }
 
-    [Required]
-    public string ClienteId { get; set; } = string.Empty;
-
-    [ForeignKey(nameof(ClienteId))]
-    public Cliente Cliente { get; set; } = null!;
-
-    public ICollection<LineaReserva> LineasReserva { get; set; } = new List<LineaReserva>();
 }

@@ -8,4 +8,6 @@ public class Cliente : ApplicationUser
     [StringLength(200)]
     public string DireccionFacturacion { get; set; } = string.Empty;
 
+    public IList<EncargoImpresion> EncargosRealizados { get; set; } = new List<EncargoImpresion>();
+    
 }

@@ -5,6 +5,7 @@ namespace AppForSEII.API.Models
     {
         [StringLength(50)]
         public string DireccionFacturacion  { get; set; }= string.Empty;
-
+public ICollection<CompraModelo3D> Compras { get; set; }
+= new List<CompraModelo3D>();
     }
 }

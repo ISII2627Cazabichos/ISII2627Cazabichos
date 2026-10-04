@@ -17,5 +17,10 @@ namespace AppForSEII.API.Models
         [Precision(5, 2)]
         public decimal PrecioTotal { get; set; }
         public MetodoPago MetodoPago { get; set; }
+        public ICollection<LineaCompraModelo3D> LineasCompra { get; set; }
+              = new List<LineaCompraModelo3D>();   
+              public Cliente Cliente { get; set; }
+    
     }
+        
 }

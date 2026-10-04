@@ -6,6 +6,9 @@ namespace AppForSEII.API.Models
         [StringLength(50)]
         public string Nombre { get; set; }= string.Empty;
         public DateTime FechaExpiracion { get; set; }
+        public Modelo3D Modelo3D { get; set; }
+ 
+        public CompraModelo3D CompraModelo3D { get; set; }
  
     }
 }

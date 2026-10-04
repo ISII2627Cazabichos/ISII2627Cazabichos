@@ -8,5 +8,7 @@ namespace AppForSEII.API.Models
         public decimal PrecioUnidad { get; set; }
         [Precision(5, 2)]
         public decimal Subtotal { get; set; }
+        public CompraModelo3D CompraModelo3D { get; set; }
+        public Modelo3D Modelo3D { get; set; }
     } 
 }

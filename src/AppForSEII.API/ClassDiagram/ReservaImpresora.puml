@@ -1,0 +1,11 @@
+@startuml
+class ReservaImpresora {
+    + Id : int <<get>> <<set>>
+    + NombreCliente : string <<get>> <<set>>
+    + ApellidosCliente : string <<get>> <<set>>
+    + DireccionFacturacion : string <<get>> <<set>>
+    + PrecioTotal : decimal <<get>> <<set>>
+    + MetodoPago : string <<get>> <<set>>
+}
+ReservaImpresora --> "FechaReserva" DateTime
+@enduml

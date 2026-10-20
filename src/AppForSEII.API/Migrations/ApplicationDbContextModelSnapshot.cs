@@ -205,7 +205,7 @@ namespace AppForSEII.API.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.ToTable("EncargoImpresion");
+                    b.ToTable("EncargoImpresiones");
                 });
 
             modelBuilder.Entity("AppForSEII.API.Models.LicenciaModelo3D", b =>
@@ -274,7 +274,7 @@ namespace AppForSEII.API.Migrations
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EncargoImpresionId")
+                    b.Property<int>("EncargoImpresionId")
                         .HasColumnType("int");
 
                     b.Property<int>("MaterialSeleccionadoId")
@@ -297,7 +297,7 @@ namespace AppForSEII.API.Migrations
 
                     b.HasIndex("PiezaId");
 
-                    b.ToTable("LineaEncargo");
+                    b.ToTable("LineasEncargo");
                 });
 
             modelBuilder.Entity("AppForSEII.API.Models.Material", b =>
@@ -326,7 +326,7 @@ namespace AppForSEII.API.Migrations
 
                     b.HasIndex("Pieza3DId");
 
-                    b.ToTable("Material");
+                    b.ToTable("Materiales");
                 });
 
             modelBuilder.Entity("AppForSEII.API.Models.Modelo3D", b =>
@@ -386,7 +386,7 @@ namespace AppForSEII.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pieza3D");
+                    b.ToTable("Piezas3D");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -571,9 +571,11 @@ namespace AppForSEII.API.Migrations
 
             modelBuilder.Entity("AppForSEII.API.Models.LineaEncargo", b =>
                 {
-                    b.HasOne("AppForSEII.API.Models.EncargoImpresion", null)
+                    b.HasOne("AppForSEII.API.Models.EncargoImpresion", "EncargoImpresion")
                         .WithMany("LineasEncargo")
-                        .HasForeignKey("EncargoImpresionId");
+                        .HasForeignKey("EncargoImpresionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("AppForSEII.API.Models.Material", "MaterialSeleccionado")
                         .WithMany()
@@ -586,6 +588,8 @@ namespace AppForSEII.API.Migrations
                         .HasForeignKey("PiezaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("EncargoImpresion");
 
                     b.Navigation("MaterialSeleccionado");
 

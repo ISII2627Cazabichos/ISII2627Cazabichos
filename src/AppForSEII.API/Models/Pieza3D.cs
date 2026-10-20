@@ -19,5 +19,5 @@ public class Pieza3D
     public CategoriaPieza Categoria { get; set; }
 
     // Relación: Una pieza tiene de 1 a varios materiales válidos
-    public HashSet<Material> MaterialesValidos { get; set; } = new();
+    public HashSet<Material> MaterialesValidos { get; set; } = new HashSet<Material>();
 }

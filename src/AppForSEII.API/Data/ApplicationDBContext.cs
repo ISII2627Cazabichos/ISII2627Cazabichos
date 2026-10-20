@@ -13,6 +13,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<LineaCompraModelo3D> LineaCompraModelo3D { get; set; }
 
     public DbSet<Modelo3D> Modelos3D { get; set; }
+
+    public DbSet<EncargoImpresion> EncargoImpresiones { get; set; }
+    public DbSet<LineaEncargo> LineasEncargo { get; set; }
+    public DbSet<Pieza3D> Piezas3D { get; set; }
+    public DbSet<Material> Materiales { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
 

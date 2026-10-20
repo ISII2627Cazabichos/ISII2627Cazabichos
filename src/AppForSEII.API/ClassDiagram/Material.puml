@@ -1,0 +1,8 @@
+@startuml
+class Material {
+    + Id : int <<get>> <<set>>
+    + Nombre : string <<get>> <<set>>
+    + PrecioPorGramo : decimal <<get>> <<set>>
+    + StockGramos : decimal <<get>> <<set>>
+}
+@enduml

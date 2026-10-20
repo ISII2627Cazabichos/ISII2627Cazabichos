@@ -23,4 +23,6 @@ public class LineaEncargo
 
     [Required]
     public Material MaterialSeleccionado { get; set; } = null!;
+
+    public EncargoImpresion EncargoImpresion { get; set; } = null!;
 }

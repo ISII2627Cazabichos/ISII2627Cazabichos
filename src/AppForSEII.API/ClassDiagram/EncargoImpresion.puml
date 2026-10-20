@@ -1,0 +1,17 @@
+@startuml
+class EncargoImpresion {
+    + Id : int <<get>> <<set>>
+    + NombreCliente : string <<get>> <<set>>
+    + ApellidosCliente : string <<get>> <<set>>
+    + DireccionEnvio : string <<get>> <<set>>
+    + NumeroTelefono : string <<get>> <<set>>
+    + Descripcion : string? <<get>> <<set>>
+    + PrecioTotal : decimal <<get>> <<set>>
+}
+class "IList`1"<T> {
+}
+EncargoImpresion --> "FechaEncargo" DateTime
+EncargoImpresion --> "MetodoPago" MetodoPago
+EncargoImpresion o-> "LineasEncargo<LineaEncargo>" "IList`1"
+EncargoImpresion o-> "Cliente" Cliente
+@enduml

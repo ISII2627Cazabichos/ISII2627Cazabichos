@@ -1,0 +1,13 @@
+@startuml
+class Modelo3D {
+    + Id : int <<get>> <<set>>
+    + Nombre : string <<get>> <<set>>
+    + Categoria : string <<get>> <<set>>
+    + Precio : decimal <<get>> <<set>>
+}
+class "ICollection`1"<T> {
+}
+Modelo3D --> "Formato" FormatoModelo3D
+Modelo3D o-> "LineasCompra<LineaCompraModelo3D>" "ICollection`1"
+Modelo3D --> "LicenciaModelo3D" LicenciaModelo3D
+@enduml

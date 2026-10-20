@@ -1,0 +1,11 @@
+@startuml
+class Pieza3D {
+    + Id : int <<get>> <<set>>
+    + Nombre : string <<get>> <<set>>
+    + Peso : decimal <<get>> <<set>>
+}
+class "HashSet`1"<T> {
+}
+Pieza3D --> "Categoria" CategoriaPieza
+Pieza3D o-> "MaterialesValidos<Material>" "HashSet`1"
+@enduml

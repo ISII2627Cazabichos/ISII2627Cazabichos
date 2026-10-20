@@ -1,0 +1,17 @@
+@startuml
+class CompraModelo3D {
+    + Id : int <<get>> <<set>>
+    + NombreCliente : string <<get>> <<set>>
+    + ApellidoCliente : string <<get>> <<set>>
+    + CorreoElectronico : string <<get>> <<set>>
+    + DireccionFacturacion : string <<get>> <<set>>
+    + Descripcion : string <<get>> <<set>>
+    + PrecioTotal : decimal <<get>> <<set>>
+}
+class "ICollection`1"<T> {
+}
+CompraModelo3D --> "FechaCompra" DateTime
+CompraModelo3D --> "MetodoPago" MetodoPago
+CompraModelo3D o-> "LineasCompra<LineaCompraModelo3D>" "ICollection`1"
+CompraModelo3D --> "Cliente" Cliente
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+class LicenciaModelo3D {
+    + Id : int <<get>> <<set>>
+    + Nombre : string <<get>> <<set>>
+}
+class "ICollection`1"<T> {
+}
+LicenciaModelo3D --> "FechaExpiracion" DateTime
+LicenciaModelo3D o-> "Modelos3D<Modelo3D>" "ICollection`1"
+@enduml

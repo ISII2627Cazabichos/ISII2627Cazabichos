@@ -1,0 +1,7 @@
+@startuml
+class LineaReserva {
+    + Id : int <<get>> <<set>>
+    + TiempoReserva : string <<get>> <<set>>
+    + PrecioSubtotal : decimal <<get>> <<set>>
+}
+@enduml

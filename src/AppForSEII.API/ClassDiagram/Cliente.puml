@@ -1,0 +1,12 @@
+@startuml
+class Cliente {
+    + DireccionFacturacion : string <<get>> <<set>>
+}
+class "ICollection`1"<T> {
+}
+class "IList`1"<T> {
+}
+ApplicationUser <|-- Cliente
+Cliente o-> "Compras<CompraModelo3D>" "ICollection`1"
+Cliente o-> "EncargosRealizados<EncargoImpresion>" "IList`1"
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+hide methods
+!include EncargoImpresion.puml
+!include ApplicationUser.puml
+!include Cliente.puml
+!include EncargoImpresion.puml
+!include LineaEncargo.puml
+!include Pieza3D.puml
+!include Material.puml
+!include CategoriaPieza.puml
+!include MetodoPago.puml
+@enduml

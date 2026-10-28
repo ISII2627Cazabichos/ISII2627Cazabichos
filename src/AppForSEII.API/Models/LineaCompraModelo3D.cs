@@ -4,6 +4,7 @@ namespace AppForSEII.API.Models
     public class LineaCompraModelo3D
     {
         public int Id { get; set; }
+        [Range(1, 200)]
         public int CantidadLicencias { get; set; }
         [Precision(5, 2)]
         public decimal PrecioUnidad { get; set; }

@@ -1,3 +1,4 @@
+
 using AppForSEII.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,7 @@ namespace AppForSEII.API.Data
             IServiceProvider serviceProvider,
             ILogger logger)
         {
-            // ============================================
             // ROLES
-            // ============================================
-
             List<string> rolesNames = new List<string>
             {
                 "Administrator",
@@ -31,16 +29,10 @@ namespace AppForSEII.API.Data
             }
             catch (Exception ex)
             {
-                logger.LogError(
-                    ex,
-                    "An error occurred seeding the roles in the Database.");
+                logger.LogError(ex, "An error occurred seeding the roles.");
             }
 
-
-            // ============================================
             // USERS
-            // ============================================
-
             var userManager =
                 serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -50,48 +42,30 @@ namespace AppForSEII.API.Data
             }
             catch (Exception ex)
             {
-                logger.LogError(
-                    ex,
-                    "An error occurred seeding the Users in the Database.");
+                logger.LogError(ex, "An error occurred seeding the Users.");
             }
 
-
-            // ============================================
             // MATERIALS
-            // ============================================
-
             try
             {
                 SeedMaterials(dbContext);
             }
             catch (Exception ex)
             {
-                logger.LogError(
-                    ex,
-                    "An error occurred seeding the Materials in the Database.");
+                logger.LogError(ex, "An error occurred seeding the Materials.");
             }
 
-
-            // ============================================
-            // PIEZAS 3D
-            // ============================================
-
+            // PIEZAS 3D Y SUS MATERIALES VÁLIDOS
             try
             {
                 SeedPiezas3D(dbContext);
             }
             catch (Exception ex)
             {
-                logger.LogError(
-                    ex,
-                    "An error occurred seeding the 3D Pieces in the Database.");
+                logger.LogError(ex, "An error occurred seeding the 3D Pieces.");
             }
 
-
-            // ============================================
             // ENCARGOS DE IMPRESIÓN
-            // ============================================
-
             try
             {
                 var user = dbContext.Cliente
@@ -100,7 +74,7 @@ namespace AppForSEII.API.Data
                 if (user == null)
                 {
                     logger.LogError(
-                        "An error occurred seeding an EncargoImpresion in the Database: customer does not exist.");
+                        "Customer does not exist. Cannot seed EncargoImpresion.");
                 }
                 else
                 {
@@ -111,10 +85,9 @@ namespace AppForSEII.API.Data
             {
                 logger.LogError(
                     ex,
-                    "An error occurred seeding the EncargoImpresion in the Database.");
+                    "An error occurred seeding the EncargoImpresion.");
             }
         }
-
 
         // =========================================================
         // ROLES
@@ -126,7 +99,6 @@ namespace AppForSEII.API.Data
         {
             foreach (string roleName in roles)
             {
-                // Comprueba que el rol no exista en la base de datos
                 if (!roleManager.RoleExistsAsync(roleName).Result)
                 {
                     IdentityRole role = new IdentityRole();
@@ -134,12 +106,10 @@ namespace AppForSEII.API.Data
                     role.Name = roleName;
                     role.NormalizedName = roleName;
 
-                    IdentityResult roleResult =
-                        roleManager.CreateAsync(role).Result;
+                    roleManager.CreateAsync(role).Wait();
                 }
             }
         }
-
 
         // =========================================================
         // USERS
@@ -149,74 +119,52 @@ namespace AppForSEII.API.Data
             UserManager<ApplicationUser> userManager,
             List<string> roles)
         {
-            // ============================================
             // ADMINISTRATOR
-            // ============================================
-
             if (userManager.FindByNameAsync("elena@uclm.es").Result == null)
             {
-                ApplicationUser user =
-                    new ApplicationUser(
-                        "1",
-                        "Elena",
-                        "Navarro Martínez",
-                        "elena@uclm.es");
+                ApplicationUser user = new ApplicationUser(
+                    "1",
+                    "Elena",
+                    "Navarro Martínez",
+                    "elena@uclm.es");
 
                 user.EmailConfirmed = true;
 
-                var result =
-                    userManager.CreateAsync(
-                        user,
-                        "Password1234%");
+                var result = userManager.CreateAsync(
+                    user,
+                    "Password1234%").Result;
 
-                result.Wait();
-
-                if (result.IsCompletedSuccessfully)
+                if (result.Succeeded)
                 {
-                    // Administrator role
-                    userManager
-                        .AddToRoleAsync(user, roles[0])
-                        .Wait();
+                    userManager.AddToRoleAsync(user, roles[0]).Wait();
                 }
             }
 
-
-            // ============================================
             // CUSTOMER
-            // ============================================
-
             if (userManager.FindByNameAsync("peter@uclm.es").Result == null)
             {
-                Cliente user =
-                    new Cliente
-                    {
-                        Id = "3",
-                        Name = "Peter",
-                        Surname = "Jackson",
-                        UserName = "peter@uclm.es",
-                        Email = "peter@uclm.es",
-                        EmailConfirmed = true,
-                        DireccionFacturacion =
-                            "Calle Mayor 10, Albacete 02001"
-                    };
-
-                var result =
-                    userManager.CreateAsync(
-                        user,
-                        "OtherPass12$");
-
-                result.Wait();
-
-                if (result.IsCompletedSuccessfully)
+                Cliente user = new Cliente
                 {
-                    // Customer role
-                    userManager
-                        .AddToRoleAsync(user, roles[2])
-                        .Wait();
+                    Id = "3",
+                    Name = "Peter",
+                    Surname = "Jackson",
+                    UserName = "peter@uclm.es",
+                    Email = "peter@uclm.es",
+                    EmailConfirmed = true,
+                    DireccionFacturacion =
+                        "Calle Mayor 10, Albacete 02001"
+                };
+
+                var result = userManager.CreateAsync(
+                    user,
+                    "OtherPass12$").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, roles[2]).Wait();
                 }
             }
         }
-
 
         // =========================================================
         // MATERIALS
@@ -225,220 +173,156 @@ namespace AppForSEII.API.Data
         public static void SeedMaterials(
             ApplicationDbContext dbContext)
         {
-            /*
-             * Materiales necesarios para probar el caso de uso:
-             *
-             * - Un material por defecto para cada pieza.
-             * - Otros materiales válidos para poder cambiar
-             *   el material de la pieza.
-             *
-             * También se incluyen diferentes stocks para poder
-             * probar los flujos relacionados con disponibilidad.
-             */
-
-            if (dbContext.Materiales
-                .FirstOrDefault(m => m.Nombre == "PLA") == null)
+            if (!dbContext.Materiales.Any(m => m.Nombre == "PLA"))
             {
-                dbContext.Materiales.Add(
-                    new Material
-                    {
-                        Nombre = "PLA",
-                        PrecioPorGramo = 0.05m,
-                        StockGramos = 5000m
-                    });
+                dbContext.Materiales.Add(new Material
+                {
+                    Nombre = "PLA",
+                    PrecioPorGramo = 0.05m,
+                    StockGramos = 5000m
+                });
             }
 
-            if (dbContext.Materiales
-                .FirstOrDefault(m => m.Nombre == "ABS") == null)
+            if (!dbContext.Materiales.Any(m => m.Nombre == "ABS"))
             {
-                dbContext.Materiales.Add(
-                    new Material
-                    {
-                        Nombre = "ABS",
-                        PrecioPorGramo = 0.07m,
-                        StockGramos = 3000m
-                    });
+                dbContext.Materiales.Add(new Material
+                {
+                    Nombre = "ABS",
+                    PrecioPorGramo = 0.07m,
+                    StockGramos = 3000m
+                });
             }
 
-            if (dbContext.Materiales
-                .FirstOrDefault(m => m.Nombre == "PETG") == null)
+            if (!dbContext.Materiales.Any(m => m.Nombre == "PETG"))
             {
-                dbContext.Materiales.Add(
-                    new Material
-                    {
-                        Nombre = "PETG",
-                        PrecioPorGramo = 0.08m,
-                        StockGramos = 2000m
-                    });
+                dbContext.Materiales.Add(new Material
+                {
+                    Nombre = "PETG",
+                    PrecioPorGramo = 0.08m,
+                    StockGramos = 2000m
+                });
             }
 
-            if (dbContext.Materiales
-                .FirstOrDefault(m => m.Nombre == "TPU") == null)
+            if (!dbContext.Materiales.Any(m => m.Nombre == "TPU"))
             {
-                dbContext.Materiales.Add(
-                    new Material
-                    {
-                        Nombre = "TPU",
-                        PrecioPorGramo = 0.10m,
-                        StockGramos = 1500m
-                    });
+                dbContext.Materiales.Add(new Material
+                {
+                    Nombre = "TPU",
+                    PrecioPorGramo = 0.10m,
+                    StockGramos = 1500m
+                });
             }
 
             dbContext.SaveChanges();
         }
 
-
         // =========================================================
-        // PIEZAS 3D
+        // PIEZAS 3D Y RELACIONES PIEZAMATERIAL
         // =========================================================
 
         public static void SeedPiezas3D(
             ApplicationDbContext dbContext)
         {
-            // -----------------------------------------------------
-            // Obtener materiales existentes
-            // -----------------------------------------------------
+            // Obtener o crear las piezas
 
-            var pla = dbContext.Materiales
-                .First(m => m.Nombre == "PLA");
+            var pieza1 = ObtenerOCrearPieza(
+                dbContext,
+                "Soporte para móvil",
+                80m,
+                CategoriaPieza.HerramientasYAccesorios);
 
-            var abs = dbContext.Materiales
-                .First(m => m.Nombre == "ABS");
+            var pieza2 = ObtenerOCrearPieza(
+                dbContext,
+                "Figura decorativa",
+                150m,
+                CategoriaPieza.Decoracion);
 
-            var petg = dbContext.Materiales
-                .First(m => m.Nombre == "PETG");
+            var pieza3 = ObtenerOCrearPieza(
+                dbContext,
+                "Engranaje de repuesto",
+                60m,
+                CategoriaPieza.Repuestos);
 
-            var tpu = dbContext.Materiales
-                .First(m => m.Nombre == "TPU");
+            var pieza4 = ObtenerOCrearPieza(
+                dbContext,
+                "Miniatura de personaje",
+                45m,
+                CategoriaPieza.MiniaturasYMaquetas);
 
+            // Guardar las piezas antes de crear las relaciones
+            dbContext.SaveChanges();
 
-            // -----------------------------------------------------
-            // PIEZA 1
-            // -----------------------------------------------------
+            // Obtener materiales
+            var pla = dbContext.Materiales.First(m => m.Nombre == "PLA");
+            var abs = dbContext.Materiales.First(m => m.Nombre == "ABS");
+            var petg = dbContext.Materiales.First(m => m.Nombre == "PETG");
+            var tpu = dbContext.Materiales.First(m => m.Nombre == "TPU");
 
-            var pieza1 = dbContext.Piezas3D
-                .Include(p => p.MaterialesValidos)
-                .FirstOrDefault(
-                    p => p.Nombre == "Soporte para móvil");
+            // Crear relaciones mediante PiezaMaterial
 
-            if (pieza1 == null)
-            {
-                pieza1 = new Pieza3D
-                {
-                    Nombre = "Soporte para móvil",
-                    Peso = 80m,
-                    Categoria = CategoriaPieza.HerramientasYAccesorios
-                };
+            // Pieza 1: Soporte para móvil
+            AgregarMaterialValido(dbContext, pieza1, pla);
+            AgregarMaterialValido(dbContext, pieza1, petg);
 
-                pieza1.MaterialesValidos.Add(pla);
-                pieza1.MaterialesValidos.Add(petg);
+            // Pieza 2: Figura decorativa
+            AgregarMaterialValido(dbContext, pieza2, pla);
+            AgregarMaterialValido(dbContext, pieza2, abs);
 
-                dbContext.Piezas3D.Add(pieza1);
-            }
-            else
-            {
-                pieza1.MaterialesValidos.Add(pla);
-                pieza1.MaterialesValidos.Add(petg);
-            }
+            // Pieza 3: Engranaje de repuesto
+            AgregarMaterialValido(dbContext, pieza3, abs);
+            AgregarMaterialValido(dbContext, pieza3, petg);
 
-
-            // -----------------------------------------------------
-            // PIEZA 2
-            // -----------------------------------------------------
-
-            var pieza2 = dbContext.Piezas3D
-                .Include(p => p.MaterialesValidos)
-                .FirstOrDefault(
-                    p => p.Nombre == "Figura decorativa");
-
-            if (pieza2 == null)
-            {
-                pieza2 = new Pieza3D
-                {
-                    Nombre = "Figura decorativa",
-                    Peso = 150m,
-                    Categoria = CategoriaPieza.Decoracion
-                };
-
-                pieza2.MaterialesValidos.Add(pla);
-                pieza2.MaterialesValidos.Add(abs);
-
-                dbContext.Piezas3D.Add(pieza2);
-            }
-            else
-            {
-                pieza2.MaterialesValidos.Add(pla);
-                pieza2.MaterialesValidos.Add(abs);
-            }
-
-
-            // -----------------------------------------------------
-            // PIEZA 3
-            // -----------------------------------------------------
-
-            var pieza3 = dbContext.Piezas3D
-                .Include(p => p.MaterialesValidos)
-                .FirstOrDefault(
-                    p => p.Nombre == "Engranaje de repuesto");
-
-            if (pieza3 == null)
-            {
-                pieza3 = new Pieza3D
-                {
-                    Nombre = "Engranaje de repuesto",
-                    Peso = 60m,
-                    Categoria = CategoriaPieza.Repuestos
-                };
-
-                pieza3.MaterialesValidos.Add(abs);
-                pieza3.MaterialesValidos.Add(petg);
-
-                dbContext.Piezas3D.Add(pieza3);
-            }
-            else
-            {
-                pieza3.MaterialesValidos.Add(abs);
-                pieza3.MaterialesValidos.Add(petg);
-            }
-
-
-            // -----------------------------------------------------
-            // PIEZA 4
-            // -----------------------------------------------------
-
-            var pieza4 = dbContext.Piezas3D
-                .Include(p => p.MaterialesValidos)
-                .FirstOrDefault(
-                    p => p.Nombre == "Miniatura de personaje");
-
-            if (pieza4 == null)
-            {
-                pieza4 = new Pieza3D
-                {
-                    Nombre = "Miniatura de personaje",
-                    Peso = 45m,
-                    Categoria = CategoriaPieza.MiniaturasYMaquetas
-                };
-
-                pieza4.MaterialesValidos.Add(pla);
-                pieza4.MaterialesValidos.Add(tpu);
-
-                dbContext.Piezas3D.Add(pieza4);
-            }
-            else
-            {
-                pieza4.MaterialesValidos.Add(pla);
-                pieza4.MaterialesValidos.Add(tpu);
-            }
-
-
-            // -----------------------------------------------------
-            // Guardar cambios
-            // -----------------------------------------------------
+            // Pieza 4: Miniatura de personaje
+            AgregarMaterialValido(dbContext, pieza4, pla);
+            AgregarMaterialValido(dbContext, pieza4, tpu);
 
             dbContext.SaveChanges();
         }
 
+        // Obtener una pieza existente o crearla
+        private static Pieza3D ObtenerOCrearPieza(
+            ApplicationDbContext dbContext,
+            string nombre,
+            decimal peso,
+            CategoriaPieza categoria)
+        {
+            var pieza = dbContext.Piezas3D
+                .FirstOrDefault(p => p.Nombre == nombre);
+
+            if (pieza == null)
+            {
+                pieza = new Pieza3D
+                {
+                    Nombre = nombre,
+                    Peso = peso,
+                    Categoria = categoria
+                };
+
+                dbContext.Piezas3D.Add(pieza);
+            }
+
+            return pieza;
+        }
+
+        // Crear la relación si todavía no existe
+        private static void AgregarMaterialValido(
+            ApplicationDbContext dbContext,
+            Pieza3D pieza,
+            Material material)
+        {
+            bool existe = dbContext.PiezasMateriales.Any(pm =>
+                pm.PiezaId == pieza.Id &&
+                pm.MaterialId == material.Id);
+
+            if (!existe)
+            {
+                dbContext.PiezasMateriales.Add(new PiezaMaterial
+                {
+                    PiezaId = pieza.Id,
+                    MaterialId = material.Id
+                });
+            }
+        }
 
         // =========================================================
         // ENCARGO DE IMPRESIÓN
@@ -448,106 +332,70 @@ namespace AppForSEII.API.Data
             ApplicationDbContext dbContext,
             Cliente cliente)
         {
-            /*
-             * Se crea un encargo de ejemplo para poder probar
-             * el caso de uso "Encargar impresión de piezas 3D".
-             *
-             * El encargo contiene:
-             * - Datos del cliente
-             * - Dirección de envío
-             * - Teléfono
-             * - Método de pago
-             * - Piezas encargadas
-             * - Material utilizado
-             * - Cantidad
-             * - Precio por unidad
-             * - Subtotal
-             * - Precio total
-             */
-
-            if (dbContext.EncargoImpresiones
-                .FirstOrDefault(e => e.Id == 1) == null)
+            if (dbContext.EncargoImpresiones.Any(e => e.Id == 1))
             {
-                var pieza =
-                    dbContext.Piezas3D
-                        .Include(p => p.MaterialesValidos)
-                        .First(p => p.Nombre == "Soporte para móvil");
-
-                var material =
-                    dbContext.Materiales
-                        .First(m => m.Nombre == "PLA");
-
-
-                // Precio de impresión:
-                // peso × precio por gramo
-                decimal precioUnidad =
-                    pieza.Peso * material.PrecioPorGramo;
-
-                int cantidad = 2;
-
-                decimal subtotal =
-                    precioUnidad * cantidad;
-
-
-                var encargo =
-                    new EncargoImpresion
-                    {
-                        FechaEncargo = DateTime.Now,
-
-                        NombreCliente = cliente.Name ?? "Peter",
-
-                        ApellidosCliente =
-                            cliente.Surname ?? "Jackson",
-
-                        DireccionEnvio =
-                            "Calle Mayor 10, Albacete 02001",
-
-                        NumeroTelefono =
-                            "600123456",
-
-                        Descripcion =
-                            "Impresión de dos unidades del soporte para móvil.",
-
-                        PrecioTotal = subtotal,
-
-                        MetodoPago =
-                            MetodoPago.TarjetaCredito,
-
-                        Cliente = cliente
-                    };
-
-
-                // Crear línea del encargo
-
-                var linea =
-                    new LineaEncargo
-                    {
-                        Cantidad = cantidad,
-
-                        PrecioUnidad = precioUnidad,
-
-                        Subtotal = subtotal,
-
-                        Pieza = pieza,
-
-                        MaterialSeleccionado = material
-                    };
-
-
-                // Añadir la línea al encargo
-
-                encargo.LineasEncargo.Add(linea);
-
-
-                // Añadir el encargo a la base de datos
-
-                dbContext.EncargoImpresiones.Add(encargo);
-
-
-                // Guardar cambios
-
-                dbContext.SaveChanges();
+                return;
             }
+
+            var pieza = dbContext.Piezas3D
+                .First(p => p.Nombre == "Soporte para móvil");
+
+            var material = dbContext.Materiales
+                .First(m => m.Nombre == "PLA");
+
+            // Precio: peso x precio por gramo
+            decimal precioUnidad =
+                pieza.Peso * material.PrecioPorGramo;
+
+            int cantidad = 2;
+
+            decimal subtotal = precioUnidad * cantidad;
+
+            var encargo = new EncargoImpresion
+            {
+                FechaEncargo = DateTime.Now,
+
+                NombreCliente = cliente.Name ?? "Peter",
+
+                ApellidosCliente = cliente.Surname ?? "Jackson",
+
+                DireccionEnvio = "Calle Mayor 10, Albacete 02001",
+
+                NumeroTelefono = "600123456",
+
+                Descripcion =
+                    "Impresión de dos unidades del soporte para móvil.",
+
+                PrecioTotal = subtotal,
+
+                MetodoPago = MetodoPago.TarjetaCredito,
+
+                Cliente = cliente
+            };
+
+            // Crear línea del encargo
+            var linea = new LineaEncargo
+            {
+                Cantidad = cantidad,
+
+                PrecioUnidad = precioUnidad,
+
+                Subtotal = subtotal,
+
+                PiezaId = pieza.Id,
+
+                Pieza = pieza,
+
+                MaterialSeleccionadoId = material.Id,
+
+                MaterialSeleccionado = material
+            };
+
+            encargo.LineasEncargo.Add(linea);
+
+            dbContext.EncargoImpresiones.Add(encargo);
+
+            dbContext.SaveChanges();
         }
     }
 }

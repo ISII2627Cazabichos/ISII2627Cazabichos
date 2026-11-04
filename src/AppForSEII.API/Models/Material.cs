@@ -1,3 +1,4 @@
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,4 +18,8 @@ public class Material
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal StockGramos { get; set; }
+
+    // Relación: Un material puede ser válido para varias piezas
+    public ICollection<PiezaMaterial> PiezasValidas { get; set; }
+        = new List<PiezaMaterial>();
 }

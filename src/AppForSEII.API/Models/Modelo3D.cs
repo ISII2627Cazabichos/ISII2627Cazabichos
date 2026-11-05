@@ -4,6 +4,7 @@ namespace AppForSEII.API.Models
 {
   public class Modelo3D
   {
+    
     [Key]
     public int Id { get; set; }
     [Required]
@@ -13,6 +14,7 @@ namespace AppForSEII.API.Models
     [StringLength(50)]
     public string Categoria  { get; set; }= string.Empty;
     public FormatoModelo3D Formato { get; set; }
+    
     [Precision(5, 2)]
     public decimal Precio { get; set; }
     

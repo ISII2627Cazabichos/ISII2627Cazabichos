@@ -1,0 +1,9 @@
+@startuml
+hide methods
+!include Cliente.puml
+!include Impresora3D.puml
+!include LineaReserva.puml
+!include MetodoPago.puml
+!include ReservaImpresora.puml
+!include TiempoReserva.puml
+@enduml

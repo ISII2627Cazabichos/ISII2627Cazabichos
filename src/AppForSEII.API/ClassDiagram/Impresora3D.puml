@@ -1,5 +1,6 @@
 @startuml
 class Impresora3D {
+    + Impresora3D()
     + Id : int <<get>> <<set>>
     + Nombre : string <<get>> <<set>>
     + Modelo : string <<get>> <<set>>
@@ -8,4 +9,5 @@ class Impresora3D {
     + PrecioKilovatioHora : decimal <<get>> <<set>>
     + PrecioReserva : decimal <<get>> <<set>>
 }
+Impresora3D o-- "LineasReserva" LineaReserva
 @enduml

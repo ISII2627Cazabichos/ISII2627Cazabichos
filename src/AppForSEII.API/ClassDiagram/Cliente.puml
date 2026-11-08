@@ -9,4 +9,5 @@ class "IList`1"<T> {
 ApplicationUser <|-- Cliente
 Cliente o-> "Compras<CompraModelo3D>" "ICollection`1"
 Cliente o-> "EncargosRealizados<EncargoImpresion>" "IList`1"
+Cliente o-> "ReservasRealizadas<ReservaImpresora>" "IList`1"
 @enduml

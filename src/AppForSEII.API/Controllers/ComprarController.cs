@@ -87,24 +87,24 @@ namespace AppForSEII.API.Controllers
              DireccionFacturacion=comprarParaCrear.DireccionFacturacion,
              MetodoPago=comprarParaCrear.MetodoPago,
              FechaCompra=DateTime.Now
-            };
+             };
             foreach (var item in comprarParaCrear.ComprarItems)
             {
-            var modelo = await _context.Modelos3D.Include(m => m.LicenciaModelo3D).FirstOrDefaultAsync(m => m.Id == item.Modelo3DId);
+              var modelo = await _context.Modelos3D.Include(m => m.LicenciaModelo3D).FirstOrDefaultAsync(m => m.Id == item.Modelo3DId);
 
-             if (modelo == null)
-             {
-              ModelState.AddModelError("Modelo3D","No existe el modelo con Id {item.Modelo3DId}");
-             }
-             else
-             {
+              if (modelo == null)
+              {
+               ModelState.AddModelError("Modelo3D","No existe el modelo con Id {item.Modelo3DId}");
+              }
+              else
+              {
                compra.LineasCompra.Add(new LineaCompraModelo3D
                {
                 CantidadLicencias = item.CantidadLicencias,
                 PrecioUnidad = modelo.Precio,
                 Modelo3D = modelo
                });
-             }
+              }
             }
             
             if (ModelState.ErrorCount > 0)
@@ -120,7 +120,6 @@ namespace AppForSEII.API.Controllers
             {
             _logger.LogError(ex.Message);
             ModelState.AddModelError("Compra","Error al guardar la compra");
-
              return Conflict(ex.Message);
             }
 

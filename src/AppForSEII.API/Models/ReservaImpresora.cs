@@ -28,6 +28,11 @@ public class ReservaImpresora
 
     [Required]
     [StringLength(50)]
-    public string MetodoPago { get; set; } = string.Empty;
+    public MetodoPago MetodoPago { get; set; }
 
+    [Required]
+    public Cliente Cliente { get; set; } = null!;
+
+    public IList<LineaReserva> LineasReserva { get; set; }
+        = new List<LineaReserva>();
 }

@@ -33,6 +33,12 @@ public class ApplicationDbContext(
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
+    public DbSet<Impresora3D> Impresoras3D { get; set; }
+
+    public DbSet<ReservaImpresora> ReservasImpresora { get; set; }
+
+    public DbSet<LineaReserva> LineasReserva { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

@@ -56,11 +56,98 @@ namespace AppForSEII.API.Controllers
                 }
                 return Ok(compra);
         }
+
+    [HttpPost]
+    [Route("[action]")]
+    [ProducesResponseType(typeof(ComprarDetalleDTO), (int)HttpStatusCode.Created)]    
+    [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
+     public async Task<ActionResult> crearCompra(ComprarParaCrearDTO comprarParaCrear)
+        {
+            if (comprarParaCrear.ComprarItems.Count == 0)
+            {
+                ModelState.AddModelError("comprarItems","debe haber al menos un modelo 3d para comprar");
+            }
+             var user = _context.ApplicationUsers.FirstOrDefault(au => au.UserName == comprarParaCrear.NombreCliente);
+              if (user != null)
+            {
+                 ModelState.AddModelError("CompraModelo3DApplicationUser", "Error! nombre de cliente esta registrado");
+
+            }
+           
+            if (ModelState.ErrorCount > 0)
+            {
+              return BadRequest(new ValidationProblemDetails(ModelState));
+            }
+            CompraModelo3D compra =new CompraModelo3D
+            {
+              NombreCliente = comprarParaCrear.NombreCliente,
+             ApellidoCliente = comprarParaCrear.ApellidoCliente,
+             CorreoElectronico= comprarParaCrear.CorreoElectronico,
+             DireccionFacturacion=comprarParaCrear.DireccionFacturacion,
+             MetodoPago=comprarParaCrear.MetodoPago,
+             FechaCompra=DateTime.Now
+            };
+            foreach (var item in comprarParaCrear.ComprarItems)
+            {
+            var modelo = await _context.Modelos3D.Include(m => m.LicenciaModelo3D).FirstOrDefaultAsync(m => m.Id == item.Modelo3DId);
+
+             if (modelo == null)
+             {
+              ModelState.AddModelError("Modelo3D","No existe el modelo con Id {item.Modelo3DId}");
+             }
+             else
+             {
+               compra.LineasCompra.Add(new LineaCompraModelo3D
+               {
+                CantidadLicencias = item.CantidadLicencias,
+                PrecioUnidad = modelo.Precio,
+                Modelo3D = modelo
+               });
+             }
+            }
             
-    }
+            if (ModelState.ErrorCount > 0)
+            {
+             return BadRequest(new ValidationProblemDetails(ModelState));
+            }
+            _context.Add(compra);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+            _logger.LogError(ex.Message);
+            ModelState.AddModelError("Compra","Error al guardar la compra");
+
+             return Conflict(ex.Message);
+            }
+
+            var compraDetalle = new ComprarDetalleDTO(
+              compra.Id,
+              compra.FechaCompra,
+              compra.NombreCliente,
+              compra.ApellidoCliente,
+              compra.CorreoElectronico,
+              compra.DireccionFacturacion,
+              compra.MetodoPago,
+              comprarParaCrear.ComprarItems,
+              compra.Descripcion);
+             
+             return CreatedAtAction("GetCompra",new { id = compra.Id },compraDetalle);
+            
+        }
+    
+
+            
+     } 
+}
+    
+
 
            
        
-}
+
     
 

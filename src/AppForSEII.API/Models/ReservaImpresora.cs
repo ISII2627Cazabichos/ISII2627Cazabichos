@@ -5,6 +5,27 @@ namespace AppForSEII.API.Models;
 
 public class ReservaImpresora
 {
+    public ReservaImpresora()
+    {
+    }
+
+    public ReservaImpresora(
+        DateTime fechaReserva,
+        string nombreCliente,
+        string apellidosCliente,
+        string direccionFacturacion,
+        MetodoPago metodoPago,
+        Cliente cliente)
+    {
+        FechaReserva = fechaReserva;
+        NombreCliente = nombreCliente;
+        ApellidosCliente = apellidosCliente;
+        DireccionFacturacion = direccionFacturacion;
+        MetodoPago = metodoPago;
+        ClienteId = cliente.Id;
+        Cliente = cliente;
+    }
+
     [Key]
     public int Id { get; set; }
 
@@ -29,6 +50,9 @@ public class ReservaImpresora
     [Required]
     [StringLength(50)]
     public MetodoPago MetodoPago { get; set; }
+
+    [Required]
+    public string ClienteId { get; set; } = string.Empty;
 
     [Required]
     public Cliente Cliente { get; set; } = null!;

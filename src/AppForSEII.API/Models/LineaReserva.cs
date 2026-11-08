@@ -5,6 +5,21 @@ namespace AppForSEII.API.Models;
 
 public class LineaReserva
 {
+    public LineaReserva()
+    {
+    }
+
+    public LineaReserva(
+        TiempoReserva tiempoReserva,
+        decimal precioSubtotal,
+        Impresora3D impresora3D)
+    {
+        TiempoReserva = tiempoReserva;
+        PrecioSubtotal = precioSubtotal;
+        Impresora3DId = impresora3D.Id;
+        Impresora3D = impresora3D;
+    }
+
     [Key]
     public int Id { get; set; }
 
@@ -20,6 +35,9 @@ public class LineaReserva
 
     [Required]
     public Impresora3D Impresora3D { get; set; } = null!;
+
+    [Required]
+    public int ReservaImpresoraId { get; set; }
 
     [Required]
     public ReservaImpresora ReservaImpresora { get; set; } = null!;

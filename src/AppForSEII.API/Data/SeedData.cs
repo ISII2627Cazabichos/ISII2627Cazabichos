@@ -55,6 +55,15 @@ namespace AppForSEII.API.Data
                 logger.LogError(ex, "An error occurred seeding the Materials.");
             }
 
+            try
+            {
+                SeedImpresoras3D(dbContext);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred seeding the 3D printers.");
+            }
+
             // PIEZAS 3D Y SUS MATERIALES VÁLIDOS
             try
             {
@@ -211,6 +220,47 @@ namespace AppForSEII.API.Data
                     PrecioPorGramo = 0.10m,
                     StockGramos = 1500m
                 });
+            }
+
+            dbContext.SaveChanges();
+        }
+
+        public static void SeedImpresoras3D(ApplicationDbContext dbContext)
+        {
+            var impresoras = new[]
+            {
+                new Impresora3D(
+                    1,
+                    "Prusa",
+                    "MK4",
+                    "Filamento",
+                    "Impresora FDM de alta precisión para prototipos y piezas funcionales.",
+                    0.20m,
+                    4m),
+                new Impresora3D(
+                    2,
+                    "Elegoo",
+                    "Mars 4",
+                    "Resina",
+                    "Impresora de resina para modelos detallados y miniaturas.",
+                    0.25m,
+                    5m),
+                new Impresora3D(
+                    3,
+                    "Bambu Lab",
+                    "X1 Carbon",
+                    "Filamento",
+                    "Impresora rápida con calibración automática y múltiples materiales.",
+                    0.30m,
+                    6m)
+            };
+
+            foreach (var impresora in impresoras)
+            {
+                if (!dbContext.Impresoras3D.Any(i => i.Id == impresora.Id))
+                {
+                    dbContext.Impresoras3D.Add(impresora);
+                }
             }
 
             dbContext.SaveChanges();

@@ -93,6 +93,7 @@ public class ReservaController : ControllerBase
             ApellidosCliente = dto.ApellidosCliente,
             DireccionFacturacion = dto.DireccionFacturacion,
             MetodoPago = dto.MetodoPago,
+            ClienteId = cliente.Id,
             Cliente = cliente
         };
 

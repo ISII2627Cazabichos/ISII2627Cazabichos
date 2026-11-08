@@ -58,5 +58,20 @@ public class ApplicationDbContext(
             .HasOne(pm => pm.Material)
             .WithMany(m => m.PiezasValidas)
             .HasForeignKey(pm => pm.MaterialId);
+
+        builder.Entity<ReservaImpresora>()
+            .HasOne(r => r.Cliente)
+            .WithMany(c => c.ReservasRealizadas)
+            .HasForeignKey(r => r.ClienteId);
+
+        builder.Entity<LineaReserva>()
+            .HasOne(l => l.ReservaImpresora)
+            .WithMany(r => r.LineasReserva)
+            .HasForeignKey(l => l.ReservaImpresoraId);
+
+        builder.Entity<LineaReserva>()
+            .HasOne(l => l.Impresora3D)
+            .WithMany(i => i.LineasReserva)
+            .HasForeignKey(l => l.Impresora3DId);
     }
 }

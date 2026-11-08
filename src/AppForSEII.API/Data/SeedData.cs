@@ -179,47 +179,66 @@ namespace AppForSEII.API.Data
         // MATERIALS
         // =========================================================
 
-        public static void SeedMaterials(
-            ApplicationDbContext dbContext)
+        public static void SeedMaterials(ApplicationDbContext dbContext)
         {
-            if (!dbContext.Materiales.Any(m => m.Nombre == "PLA"))
+            var materiales = new[]
             {
-                dbContext.Materiales.Add(new Material
+                new Material
                 {
                     Nombre = "PLA",
                     PrecioPorGramo = 0.05m,
                     StockGramos = 5000m
-                });
-            }
-
-            if (!dbContext.Materiales.Any(m => m.Nombre == "ABS"))
-            {
-                dbContext.Materiales.Add(new Material
+                },
+                new Material
                 {
                     Nombre = "ABS",
                     PrecioPorGramo = 0.07m,
                     StockGramos = 3000m
-                });
-            }
-
-            if (!dbContext.Materiales.Any(m => m.Nombre == "PETG"))
-            {
-                dbContext.Materiales.Add(new Material
+                },
+                new Material
                 {
                     Nombre = "PETG",
                     PrecioPorGramo = 0.08m,
                     StockGramos = 2000m
-                });
-            }
-
-            if (!dbContext.Materiales.Any(m => m.Nombre == "TPU"))
-            {
-                dbContext.Materiales.Add(new Material
+                },
+                new Material
                 {
                     Nombre = "TPU",
                     PrecioPorGramo = 0.10m,
                     StockGramos = 1500m
-                });
+                },
+                new Material
+                {
+                    Nombre = "Nylon",
+                    PrecioPorGramo = 0.12m,
+                    StockGramos = 2500m
+                },
+                new Material
+                {
+                    Nombre = "Resina",
+                    PrecioPorGramo = 0.15m,
+                    StockGramos = 2000m
+                },
+                new Material
+                {
+                    Nombre = "PLA+",
+                    PrecioPorGramo = 0.06m,
+                    StockGramos = 3500m
+                },
+                new Material
+                {
+                    Nombre = "Fibra de carbono",
+                    PrecioPorGramo = 0.20m,
+                    StockGramos = 1000m
+                }
+            };
+
+            foreach (var material in materiales)
+            {
+                if (!dbContext.Materiales.Any(m => m.Nombre == material.Nombre))
+                {
+                    dbContext.Materiales.Add(material);
+                }
             }
 
             dbContext.SaveChanges();
@@ -270,66 +289,62 @@ namespace AppForSEII.API.Data
         // PIEZAS 3D Y RELACIONES PIEZAMATERIAL
         // =========================================================
 
-        public static void SeedPiezas3D(
-            ApplicationDbContext dbContext)
+        public static void SeedPiezas3D(ApplicationDbContext dbContext)
         {
-            // Obtener o crear las piezas
+            var piezas = new[]
+            {
+                // DECORACIÓN
+                ("Figura decorativa", 150m, CategoriaPieza.Decoracion, new[] { "PLA", "ABS" }),
+                ("Jarrón decorativo", 180m, CategoriaPieza.Decoracion, new[] { "PLA", "PETG" }),
+                ("Maceta geométrica", 120m, CategoriaPieza.Decoracion, new[] { "PLA+", "PETG" }),
+                ("Lámpara decorativa", 250m, CategoriaPieza.Decoracion, new[] { "ABS", "PLA" }),
+                ("Soporte para velas", 90m, CategoriaPieza.Decoracion, new[] { "PLA", "PLA+" }),
 
-            var pieza1 = ObtenerOCrearPieza(
-                dbContext,
-                "Soporte para móvil",
-                80m,
-                CategoriaPieza.HerramientasYAccesorios);
+                // MINIATURAS Y MAQUETAS
+                ("Miniatura de personaje", 45m, CategoriaPieza.MiniaturasYMaquetas, new[] { "PLA", "Resina" }),
+                ("Dragón fantástico", 80m, CategoriaPieza.MiniaturasYMaquetas, new[] { "PLA", "Resina" }),
+                ("Casa en miniatura", 200m, CategoriaPieza.MiniaturasYMaquetas, new[] { "PLA", "ABS" }),
+                ("Figura de colección", 100m, CategoriaPieza.MiniaturasYMaquetas, new[] { "Resina", "PLA" }),
+                ("Vehículo en miniatura", 75m, CategoriaPieza.MiniaturasYMaquetas, new[] { "PLA", "ABS" }),
 
-            var pieza2 = ObtenerOCrearPieza(
-                dbContext,
-                "Figura decorativa",
-                150m,
-                CategoriaPieza.Decoracion);
+                // REPUESTOS
+                ("Engranaje de repuesto", 60m, CategoriaPieza.Repuestos, new[] { "ABS", "PETG" }),
+                ("Pieza de unión", 35m, CategoriaPieza.Repuestos, new[] { "Nylon", "ABS" }),
+                ("Bisagra mecánica", 55m, CategoriaPieza.Repuestos, new[] { "PETG", "Nylon" }),
+                ("Tapa de protección", 40m, CategoriaPieza.Repuestos, new[] { "ABS", "PLA+" }),
+                ("Soporte estructural", 130m, CategoriaPieza.Repuestos, new[] { "Nylon", "Fibra de carbono" }),
 
-            var pieza3 = ObtenerOCrearPieza(
-                dbContext,
-                "Engranaje de repuesto",
-                60m,
-                CategoriaPieza.Repuestos);
+                // HERRAMIENTAS Y ACCESORIOS
+                ("Soporte para móvil", 80m, CategoriaPieza.HerramientasYAccesorios, new[] { "PLA", "PETG" }),
+                ("Organizador de escritorio", 160m, CategoriaPieza.HerramientasYAccesorios, new[] { "PLA", "PLA+" }),
+                ("Soporte para auriculares", 110m, CategoriaPieza.HerramientasYAccesorios, new[] { "PLA", "ABS" }),
+                ("Carcasa electrónica", 95m, CategoriaPieza.HerramientasYAccesorios, new[] { "ABS", "PETG" }),
+                ("Adaptador universal", 50m, CategoriaPieza.HerramientasYAccesorios, new[] { "TPU", "Nylon" })
+            };
 
-            var pieza4 = ObtenerOCrearPieza(
-                dbContext,
-                "Miniatura de personaje",
-                45m,
-                CategoriaPieza.MiniaturasYMaquetas);
+            foreach (var dato in piezas)
+            {
+                var pieza = ObtenerOCrearPieza(
+                    dbContext,
+                    dato.Item1,
+                    dato.Item2,
+                    dato.Item3
+                );
 
-            // Guardar las piezas antes de crear las relaciones
-            dbContext.SaveChanges();
+                dbContext.SaveChanges();
 
-            // Obtener materiales
-            var pla = dbContext.Materiales.First(m => m.Nombre == "PLA");
-            var abs = dbContext.Materiales.First(m => m.Nombre == "ABS");
-            var petg = dbContext.Materiales.First(m => m.Nombre == "PETG");
-            var tpu = dbContext.Materiales.First(m => m.Nombre == "TPU");
+                foreach (var nombreMaterial in dato.Item4)
+                {
+                    var material = dbContext.Materiales
+                        .First(m => m.Nombre == nombreMaterial);
 
-            // Crear relaciones mediante PiezaMaterial
-
-            // Pieza 1: Soporte para móvil
-            AgregarMaterialValido(dbContext, pieza1, pla);
-            AgregarMaterialValido(dbContext, pieza1, petg);
-
-            // Pieza 2: Figura decorativa
-            AgregarMaterialValido(dbContext, pieza2, pla);
-            AgregarMaterialValido(dbContext, pieza2, abs);
-
-            // Pieza 3: Engranaje de repuesto
-            AgregarMaterialValido(dbContext, pieza3, abs);
-            AgregarMaterialValido(dbContext, pieza3, petg);
-
-            // Pieza 4: Miniatura de personaje
-            AgregarMaterialValido(dbContext, pieza4, pla);
-            AgregarMaterialValido(dbContext, pieza4, tpu);
+                    AgregarMaterialValido(dbContext, pieza, material);
+                }
+            }
 
             dbContext.SaveChanges();
         }
 
-        // Obtener una pieza existente o crearla
         private static Pieza3D ObtenerOCrearPieza(
             ApplicationDbContext dbContext,
             string nombre,
@@ -354,7 +369,6 @@ namespace AppForSEII.API.Data
             return pieza;
         }
 
-        // Crear la relación si todavía no existe
         private static void AgregarMaterialValido(
             ApplicationDbContext dbContext,
             Pieza3D pieza,
@@ -374,6 +388,7 @@ namespace AppForSEII.API.Data
             }
         }
 
+
         // =========================================================
         // ENCARGO DE IMPRESIÓN
         // =========================================================
@@ -382,70 +397,94 @@ namespace AppForSEII.API.Data
             ApplicationDbContext dbContext,
             Cliente cliente)
         {
-            if (dbContext.EncargoImpresiones.Any(e => e.Id == 1))
+            var encargos = new[]
             {
-                return;
+                ("Soporte para móvil", "PLA", 2),
+                ("Figura decorativa", "ABS", 1),
+                ("Engranaje de repuesto", "PETG", 5),
+                ("Miniatura de personaje", "PLA", 3),
+                ("Jarrón decorativo", "PETG", 2),
+                ("Maceta geométrica", "PLA+", 4),
+                ("Dragón fantástico", "Resina", 1),
+                ("Pieza de unión", "Nylon", 6),
+                ("Bisagra mecánica", "PETG", 3),
+                ("Organizador de escritorio", "PLA", 2),
+                ("Soporte para auriculares", "ABS", 1),
+                ("Carcasa electrónica", "PETG", 2),
+                ("Soporte estructural", "Nylon", 3),
+                ("Adaptador universal", "TPU", 5),
+                ("Lámpara decorativa", "ABS", 1)
+            };
+
+            for (int i = 0; i < encargos.Length; i++)
+            {
+                string descripcion = $"SEED-ENCARGO-{i + 1:D2}";
+
+                bool existe = dbContext.EncargoImpresiones
+                    .Any(e => e.Descripcion == descripcion);
+
+                if (existe)
+                    continue;
+
+                var pieza = dbContext.Piezas3D
+                    .First(p => p.Nombre == encargos[i].Item1);
+
+                var material = dbContext.Materiales
+                    .First(m => m.Nombre == encargos[i].Item2);
+
+                bool materialValido = dbContext.PiezasMateriales.Any(pm =>
+                    pm.PiezaId == pieza.Id &&
+                    pm.MaterialId == material.Id);
+
+                if (!materialValido)
+                    continue;
+
+                int cantidad = encargos[i].Item3;
+
+                decimal precioUnidad =
+                    pieza.Peso * material.PrecioPorGramo;
+
+                decimal subtotal = precioUnidad * cantidad;
+
+                var encargo = new EncargoImpresion
+                {
+                    FechaEncargo = DateTime.Now.AddDays(-i),
+
+                    NombreCliente = cliente.Name ?? "Peter",
+
+                    ApellidosCliente = cliente.Surname ?? "Jackson",
+
+                    DireccionEnvio = "Calle Mayor 10, Albacete 02001",
+
+                    NumeroTelefono = "600123456",
+
+                    Descripcion = descripcion,
+
+                    PrecioTotal = subtotal,
+
+                    MetodoPago = MetodoPago.TarjetaCredito,
+
+                    Cliente = cliente
+                };
+
+                var linea = new LineaEncargo
+                {
+                    Cantidad = cantidad,
+                    PrecioUnidad = precioUnidad,
+                    Subtotal = subtotal,
+                    PiezaId = pieza.Id,
+                    Pieza = pieza,
+                    MaterialSeleccionadoId = material.Id,
+                    MaterialSeleccionado = material
+                };
+
+                encargo.LineasEncargo.Add(linea);
+
+                dbContext.EncargoImpresiones.Add(encargo);
             }
-
-            var pieza = dbContext.Piezas3D
-                .First(p => p.Nombre == "Soporte para móvil");
-
-            var material = dbContext.Materiales
-                .First(m => m.Nombre == "PLA");
-
-            // Precio: peso x precio por gramo
-            decimal precioUnidad =
-                pieza.Peso * material.PrecioPorGramo;
-
-            int cantidad = 2;
-
-            decimal subtotal = precioUnidad * cantidad;
-
-            var encargo = new EncargoImpresion
-            {
-                FechaEncargo = DateTime.Now,
-
-                NombreCliente = cliente.Name ?? "Peter",
-
-                ApellidosCliente = cliente.Surname ?? "Jackson",
-
-                DireccionEnvio = "Calle Mayor 10, Albacete 02001",
-
-                NumeroTelefono = "600123456",
-
-                Descripcion =
-                    "Impresión de dos unidades del soporte para móvil.",
-
-                PrecioTotal = subtotal,
-
-                MetodoPago = MetodoPago.TarjetaCredito,
-
-                Cliente = cliente
-            };
-
-            // Crear línea del encargo
-            var linea = new LineaEncargo
-            {
-                Cantidad = cantidad,
-
-                PrecioUnidad = precioUnidad,
-
-                Subtotal = subtotal,
-
-                PiezaId = pieza.Id,
-
-                Pieza = pieza,
-
-                MaterialSeleccionadoId = material.Id,
-
-                MaterialSeleccionado = material
-            };
-
-            encargo.LineasEncargo.Add(linea);
-
-            dbContext.EncargoImpresiones.Add(encargo);
 
             dbContext.SaveChanges();
         }
+
     }
 }

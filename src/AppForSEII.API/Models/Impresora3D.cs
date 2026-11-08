@@ -30,4 +30,7 @@ public class Impresora3D
     [Column(TypeName = "decimal(18,2)")]
     public decimal PrecioReserva { get; set; }
 
+    public IList<LineaReserva> LineasReserva { get; set; }
+        = new List<LineaReserva>();
+
 }

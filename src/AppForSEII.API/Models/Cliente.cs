@@ -13,4 +13,7 @@ public ICollection<CompraModelo3D> Compras { get; set; }
  
 public IList<EncargoImpresion> EncargosRealizados { get; set; }
 = new List<EncargoImpresion>();
+
+public IList<ReservaImpresora> ReservasRealizadas { get; set; }
+= new List<ReservaImpresora>();
 }

@@ -35,4 +35,37 @@ public class ReservaController : ControllerBase
 
         return Ok(impresoras);
     }
+
+    [HttpGet]
+    [Route("[action]/{id}")]
+    [ProducesResponseType(typeof(ReservaDetalleDTO), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<ActionResult<ReservaDetalleDTO>> GetReserva(int id)
+    {
+        var reserva = await _context.ReservasImpresora
+            .Include(r => r.LineasReserva)
+                .ThenInclude(l => l.Impresora3D)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (reserva == null)
+            return NotFound();
+
+        var resultado = new ReservaDetalleDTO(
+            reserva.Id,
+            reserva.FechaReserva,
+            reserva.NombreCliente,
+            reserva.ApellidosCliente,
+            reserva.DireccionFacturacion,
+            reserva.PrecioTotal,
+            reserva.MetodoPago.ToString(),
+            reserva.LineasReserva.Select(linea => new ReservaItemDTO(
+                linea.Id,
+                linea.Impresora3DId,
+                linea.Impresora3D.Nombre,
+                linea.Impresora3D.Modelo,
+                linea.TiempoReserva.ToString(),
+                linea.PrecioSubtotal)).ToList());
+
+        return Ok(resultado);
+    }
 }

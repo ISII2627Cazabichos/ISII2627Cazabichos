@@ -69,9 +69,9 @@ namespace AppForSEII.API.Controllers
                 ModelState.AddModelError("comprarItems","debe haber al menos un modelo 3d para comprar");
             }
              var user = _context.ApplicationUsers.FirstOrDefault(au => au.UserName == comprarParaCrear.NombreCliente);
-              if (user != null)
+              if (user.Equals(comprarParaCrear.NombreCliente))
             {
-                 ModelState.AddModelError("CompraModelo3DApplicationUser", "Error! nombre de cliente esta registrado");
+                 ModelState.AddModelError("CompraModelo3DApplicationUser", "Error!{"+ user.Name+"}el nombre no es valido ");
 
             }
            
